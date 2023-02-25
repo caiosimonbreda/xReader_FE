@@ -9,7 +9,7 @@
     </div>
     <div class="nav-items-right">
       <button v-for="story, index in stories" class="navbar-input">{{ index+1 }}</button>
-      <button class="navbar-input">+</button>
+      <button class="navbar-input" id="add-stories-btn">+</button>
     </div>
   </nav>
 </template>
@@ -56,13 +56,13 @@ const stories = ref([
 <style scoped>
 .navbar {
   background-color: #181818;
-  height: 3.3em;
+  height: 58px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-left: 1em;
   padding-right: 0.25em;
-  padding-block: 0.5em;
+  padding-block: 10px;
 }
 
 .nav-items-left {
@@ -103,13 +103,18 @@ select.navbar-input {
 }
 
 button.navbar-input {
-  width: 2.7em;
-  margin-inline: 0.25em;
+  width: 38px;
+  margin-inline: 5px;
 }
 
 button.navbar-input:hover,
 button.navbar-input:active {
   background-color: #3f3f3f;
+}
+
+#add-stories-btn {
+  width: 38px;
+  font-size: 1.15em;
 }
 </style>
 
