@@ -9,13 +9,19 @@
     </div>
     <div class="nav-items-right">
       <button v-for="story, index in stories" class="navbar-input">{{ index+1 }}</button>
-      <button class="navbar-input" id="add-stories-btn">+</button>
+      <button class="navbar-input" id="add-stories-btn" @click="openImporter">+</button>
     </div>
   </nav>
 </template>
   
 <script setup>
 import { ref } from 'vue';
+
+const emit = defineEmits(['openDialogue'])
+
+const openImporter = function() {
+  emit("openDialogue", "importNewImage")
+}
 
 const themes = ref([
   {
@@ -50,6 +56,8 @@ const stories = ref([
     text: ""
   }
 ])
+
+
 
 </script>
 

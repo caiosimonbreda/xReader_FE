@@ -1,40 +1,66 @@
 <template>
-  <input type="file" id="imageInput" accept="image/jpeg, image/png, image/jpg" @change="onFileSelected" />
-  <button class="regular-button" @click="onConfirmButton">Read</button>
+  <input type="file" id="imageInput" accept="image/jpeg, image/png, image/jpg" multiple @change="onFileSelected" />
+  <button class="regular-button" @click="onConfirmButton">Do it!</button>
 </template>
 
 <script setup>
 import axios from 'axios';
 import { ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
+const emit = defineEmits(['stories-added'])
 
-const uploadedImage = ref("")
+const uploadedImages = ref([])
 
 const onFileSelected = (event) => {
-  uploadedImage.value = event.target.files[0]
+  //convert file list object to an array:
+  let fileList = uploadedImages.value = Object.keys(event.target.files).map(key => {
+    return event.target.files[key];
+  })
+
+  uploadedImages.value = fileList.map((file) => {
+    return {
+      img: file,
+      id: uuidv4()
+    }
+  })
+  console.log(uploadedImages.value)
 }
 
 const onConfirmButton = () => {
-  if (uploadedImage.value !== "") {
-    encodeImageToBase64(uploadedImage.value)
+
+  if (uploadedImages.value.length > 0) {
+    //emit stories array containing only IDs to parent comp. to form pages
+    console.log("emitting stories-added")
+    emit('stories-added', uploadedImages.value.map((file) => {
+      return file.id
+    }))
+
+
+
+    //send each image over to be encoded and sent to backend for processing + OCR
+    uploadedImages.value.forEach((file) => {
+      encodeImageToBase64(file.img, file.id)
+    })
   }
 }
 
-const encodeImageToBase64 = (img) => {
+const encodeImageToBase64 = (img, id) => {
   const fr = new FileReader();
   fr.onloadend = function () {
     //when done encoding, send image over to backend
-    onSendImage(fr.result)
+    onSendImage(fr.result, id)
   }
   fr.readAsDataURL(img);
 }
 
 //Send image to backend:
-const onSendImage = (base64img) => {
+const onSendImage = (base64img, id) => {
   getImageLightness(base64img).then((avgBrightness) => {
     axios.post('http://127.0.0.1:3001/upload', {
       base64img,
-      avgBrightness
+      avgBrightness,
+      id
     }).then((res) => { //on response from server after OCR, handle text lines
 
       console.log(res)
@@ -43,7 +69,7 @@ const onSendImage = (base64img) => {
 
       res.data.forEach((paragraph) => {
         paragraph.lines.forEach((line) => {
-          let newLine = {...line}
+          let newLine = { ...line }
           newLine.text = line.text.replaceAll('|', 'I')
           newLines.push(newLine)
         });
@@ -105,20 +131,24 @@ input[type="file"] {
 input {
   color: white;
   border: 1px solid #555;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 1em;
   width: 26em;
   margin: auto;
+  margin-bottom: 1em;
 }
+
 .regular-button {
-  padding: 1em;
+  background-color: #2f2f2f;
+  padding: 0.7em 1.2em;
+  color: #a6a6a6;
+  height: 100%;
+  border-radius: 5px;
   border: none;
-  color: white;
-  border-radius: 7px;
-  background-color: #555;
-  margin: auto;
 }
+
 .regular-button:hover,
 .regular-button:active {
-  background-color: #888;
-}</style>
+  background-color: #3f3f3f;
+}
+</style>

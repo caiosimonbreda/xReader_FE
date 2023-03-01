@@ -1,15 +1,15 @@
 <template>
-  <Navbar class="navbar" />
+  <Navbar class="navbar" @openDialogue="openDialogue" />
 
   <div class="text-wrapper">
     <p v-for="line in textLines">{{ line.text }}</p>
   </div>
 
-  <div class="dialogue-container">
-    <Dialogue>
-      <template #title>Lmao even</template>
+  <div class="dialogue-container" v-show="showDialogue" @click="showDialogue = false">
+    <Dialogue @closeDialogue="showDialogue = false" @click.stop>
+      <template #title>Import new greentexts</template>
       <template #content>
-        <Importer />
+        <Importer @stories-added="onStoriesAdded" />
       </template>
     </Dialogue>
   </div>
@@ -22,6 +22,25 @@ import Dialogue from '../components/TheDialogue.vue'
 import Importer from '../components/TheImport.vue'
 
 const textLines = ref("")
+
+
+//Import dialogue behaviour:
+const showDialogue = ref(true)
+
+const openDialogue = function (context) {
+  //FUTURE: context may be importNewImage or other, depending
+  //on the component that should be mounted in the dialogue. 
+  showDialogue.value = true
+}
+
+
+//Stories array management:
+const stories = ref([])
+
+const onStoriesAdded = function(newStories) {
+  console.log("New story IDs received!", newStories)
+}
+
 
 </script>
 
@@ -40,7 +59,7 @@ const textLines = ref("")
 }
 .dialogue-container {
   display: flex;
-  background-color: transparent;
+  /* background-color: rgb(0, 0, 0, 0.9); */
   position: absolute;
   height: 100%;
   width: 100%;
