@@ -8,19 +8,25 @@
       </select>
     </div>
     <div class="nav-items-right">
-      <button v-for="story, index in stories" class="navbar-input">{{ index+1 }}</button>
+      <button v-for="story, index in props.stories" class="navbar-input" @click="selectStory(index)">{{ index+1 }}</button>
       <button class="navbar-input" id="add-stories-btn" @click="openImporter">+</button>
     </div>
   </nav>
 </template>
   
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
-const emit = defineEmits(['openDialogue'])
+const props = defineProps(['stories'])
 
+// --- Outbout events: ---
+const emit = defineEmits(['openDialogue', 'selectStory'])
 const openImporter = function() {
   emit("openDialogue", "importNewImage")
+}
+
+const selectStory = function(index) {
+  emit("selectStory", index)
 }
 
 const themes = ref([
@@ -36,25 +42,6 @@ const themes = ref([
     text: 'Photon',
     value: 'photon'
   },
-])
-
-const stories = ref([
-  {
-    id: 0,
-    text: ""
-  },
-  {
-    id: 1,
-    text: ""
-  },
-  {
-    id: 2,
-    text: ""
-  },
-  {
-    id: 3,
-    text: ""
-  }
 ])
 
 

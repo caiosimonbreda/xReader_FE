@@ -8,7 +8,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-const emit = defineEmits(['stories-added'])
+const emit = defineEmits(['stories-added', 'story-ready'])
 
 const uploadedImages = ref([])
 
@@ -33,10 +33,8 @@ const onConfirmButton = () => {
     //emit stories array containing only IDs to parent comp. to form pages
     console.log("emitting stories-added")
     emit('stories-added', uploadedImages.value.map((file) => {
-      return file.id
+      return { id: file.id}
     }))
-
-
 
     //send each image over to be encoded and sent to backend for processing + OCR
     uploadedImages.value.forEach((file) => {
@@ -67,7 +65,7 @@ const onSendImage = (base64img, id) => {
 
       let newLines = []
 
-      res.data.forEach((paragraph) => {
+      res.data.text.forEach((paragraph) => {
         paragraph.lines.forEach((line) => {
           let newLine = { ...line }
           newLine.text = line.text.replaceAll('|', 'I')
@@ -75,9 +73,9 @@ const onSendImage = (base64img, id) => {
         });
       })
 
-      console.log(newLines)
+      //console.log(newLines)
+      emit("story-ready", {id: res.data.id, text: newLines})
 
-      textLines.value = newLines
     }).catch((err) => {
       console.log(err)
     })
@@ -86,27 +84,27 @@ const onSendImage = (base64img, id) => {
 
 async function getImageLightness(imageSrc) {
   return new Promise(resolve => {
-    var img = document.createElement("img");
+    let img = document.createElement("img");
     img.src = imageSrc;
     img.style.display = "none";
     document.body.appendChild(img);
 
-    var colorSum = 0;
+    let colorSum = 0;
 
     img.onload = function () {
       // create canvas
-      var canvas = document.createElement("canvas");
+      let canvas = document.createElement("canvas");
       canvas.width = this.width;
       canvas.height = this.height;
 
-      var ctx = canvas.getContext("2d");
+      let ctx = canvas.getContext("2d");
       ctx.drawImage(this, 0, 0);
 
-      var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      var data = imageData.data;
-      var r, g, b, avg;
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let data = imageData.data;
+      let r, g, b, avg;
 
-      for (var x = 0, len = data.length; x < len; x += 4) {
+      for (let x = 0, len = data.length; x < len; x += 4) {
         r = data[x];
         g = data[x + 1];
         b = data[x + 2];
@@ -115,7 +113,7 @@ async function getImageLightness(imageSrc) {
         colorSum += avg;
       }
 
-      var brightness = Math.floor(colorSum / (this.width * this.height));
+      let brightness = Math.floor(colorSum / (this.width * this.height));
       resolve(brightness)
     }
   })
@@ -129,7 +127,7 @@ input[type="file"] {
 }
 
 input {
-  color: white;
+  color: #a6a6a6;
   border: 1px solid #555;
   border-radius: 5px;
   padding: 1em;

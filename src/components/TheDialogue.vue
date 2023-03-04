@@ -41,6 +41,8 @@
 }
 
 .dialogue-title {
+  color: #a6a6a6;
+  font-weight: normal;
   font-size: 1.2em;
 }
 

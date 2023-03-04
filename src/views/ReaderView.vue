@@ -1,15 +1,16 @@
 <template>
-  <Navbar class="navbar" @openDialogue="openDialogue" />
+  <Navbar class="navbar" :stories="stories" @openDialogue="openDialogue" @selectStory="selectStory" />
 
-  <div class="text-wrapper">
-    <p v-for="line in textLines">{{ line.text }}</p>
+  <div v-if="storyToDisplay.id" class="text-wrapper">
+    <h4>{{ storyToDisplay.id }}</h4>
+    <p v-for="line in storyToDisplay.text">{{ line.text }}</p>
   </div>
 
   <div class="dialogue-container" v-show="showDialogue" @click="showDialogue = false">
     <Dialogue @closeDialogue="showDialogue = false" @click.stop>
       <template #title>Import new greentexts</template>
       <template #content>
-        <Importer @stories-added="onStoriesAdded" />
+        <Importer @stories-added="onStoriesAdded" @story-ready="onStoryReady" />
       </template>
     </Dialogue>
   </div>
@@ -21,10 +22,7 @@ import Navbar from '../components/TheNavbar.vue'
 import Dialogue from '../components/TheDialogue.vue'
 import Importer from '../components/TheImport.vue'
 
-const textLines = ref("")
-
-
-//Import dialogue behaviour:
+// --- Dialogue behaviour: --- 
 const showDialogue = ref(true)
 
 const openDialogue = function (context) {
@@ -33,14 +31,30 @@ const openDialogue = function (context) {
   showDialogue.value = true
 }
 
-
-//Stories array management:
+// --- Stories array management ---
 const stories = ref([])
-
+//(sent into the Navbar as a prop)
 const onStoriesAdded = function(newStories) {
-  console.log("New story IDs received!", newStories)
+  console.log("NUTTSACK", newStories)
+  stories.value = stories.value.concat(newStories)
 }
 
+// --- Story display ---
+
+const storyToDisplay = ref({})
+
+const selectStory = function(index) {
+  console.log("New story selected", index);
+  storyToDisplay.value = stories.value[index]
+  console.log(storyToDisplay.value)
+}
+
+const onStoryReady = function(story) {
+  const storyIndex = stories.value.map(s => s.id).indexOf(id);
+  stories.value[storyIndex].text = story.text;
+}
+
+//{ id: xxxx, textLines: [*], }
 
 </script>
 
@@ -54,7 +68,7 @@ const onStoriesAdded = function(newStories) {
 .text-wrapper {
   margin: auto;
   width: 90%;
-  font-family: 'Source Code Pro', 'Courier New', Courier, monospace;
+  font-family: Arial, Helvetica, sans-serif;
   color: #94bc88
 }
 .dialogue-container {
