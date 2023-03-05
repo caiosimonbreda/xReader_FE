@@ -1,5 +1,5 @@
 <template>
-  <input type="file" id="imageInput" accept="image/jpeg, image/png, image/jpg" multiple @change="onFileSelected" />
+  <input type="file" ref="imageInput" id="imageInput" accept="image/jpeg, image/png, image/jpg" multiple @change="onFileSelected" />
   <button class="regular-button" @click="onConfirmButton">Do it!</button>
 </template>
 
@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 const emit = defineEmits(['stories-added', 'story-ready'])
 
 const uploadedImages = ref([])
+
+const imageInput = ref(null)
 
 const onFileSelected = (event) => {
   //convert file list object to an array:
@@ -35,6 +37,9 @@ const onConfirmButton = () => {
     emit('stories-added', uploadedImages.value.map((file) => {
       return { id: file.id}
     }))
+
+    //clear input:
+    imageInput.value.value = null
 
     //send each image over to be encoded and sent to backend for processing + OCR
     uploadedImages.value.forEach((file) => {

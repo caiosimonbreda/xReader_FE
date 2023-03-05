@@ -73,6 +73,8 @@ const themes = ref([
   height: 100%;
   align-items: center;
   justify-content: flex-end;
+  max-width: 73%;
+  overflow-x: auto;
 }
 
 .logo-text {
@@ -98,6 +100,7 @@ select.navbar-input {
 }
 
 button.navbar-input {
+  min-width: 38px;
   width: 38px;
   margin-inline: 5px;
 }

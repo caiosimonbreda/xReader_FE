@@ -1,10 +1,12 @@
 <template>
   <Navbar class="navbar" :stories="stories" @openDialogue="openDialogue" @selectStory="selectStory" />
-
+<!-- :class="line.text[0] === '>' || line.text[0] == line.text[0].toLowerCase() ? 'text-line-green' : 'text-line-regular'"> -->
   <div class="main-content-wrapper">
     <div v-if="storyToDisplay.id" class="text-wrapper">
-      <p v-for="line in storyToDisplay.text"
-        :class="line.text[0] === '>' || line.text[0] == line.text[0].toLowerCase() ? 'text-line-green' : 'text-line-regular'">
+      <p 
+        v-for="line in storyToDisplay.text"
+        :style="`color: ${line.color};`"
+      >
         {{ line.text }}</p>
     </div>
   </div>
@@ -40,25 +42,36 @@ const stories = ref([])
 const onStoriesAdded = function (newStories) {
   console.log("NUTTSACK", newStories)
   stories.value = stories.value.concat(newStories)
+  selectStory(stories.value.length - 1)
 }
 
 // --- Story display ---
-
 const storyToDisplay = ref({})
 
 const selectStory = function (index) {
-  console.log("New story selected", index);
+  console.log("New story selected", stories.value[index]);
   storyToDisplay.value = stories.value[index]
-  console.log(storyToDisplay.value)
 }
 
 const onStoryReady = function (story) {
   const storyIndex = stories.value.map(s => s.id).indexOf(story.id);
+  console.log(`storyIndex is ${storyIndex}`)
+  story.text.forEach((line, index) => {
+
+    if (line.text[0] == '>' && line.text[1] != '>') {
+      line.color = '#869F5F'
+    } else if (line.text[0].toLowerCase() == line.text[0] && story.text[index-1]) {
+      line.color = story.text[index-1].text[0] == '>' ? '#869F5F' : '#888'
+    } else {
+      line.color = '#888'
+    }
+
+  })
+  console.log("check out my colors", story.text)
+  console.log("before", stories.value)
   stories.value[storyIndex].text = story.text;
+  console.log("after", stories.value)
 }
-
-//{ id: xxxx, textLines: [*], }
-
 </script>
 
 <style scoped>
@@ -85,18 +98,8 @@ const onStoryReady = function (story) {
   padding-bottom: 100px;
   width: 60%;
   font-family: Arial, Helvetica, sans-serif;
-}
-
-.text-line-regular {
-  color: #6a6a6a;
-  line-height: 200%;
-}
-
-.text-line-green {
-  color: #94bc88;
   line-height: 140%;
 }
-
 .dialogue-container {
   display: flex;
   /* background-color: rgb(0, 0, 0, 0.9); */
