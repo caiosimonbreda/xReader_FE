@@ -1,9 +1,12 @@
 <template>
   <Navbar class="navbar" :stories="stories" @openDialogue="openDialogue" @selectStory="selectStory" />
 
-  <div v-if="storyToDisplay.id" class="text-wrapper">
-    <h4>{{ storyToDisplay.id }}</h4>
-    <p v-for="line in storyToDisplay.text">{{ line.text }}</p>
+  <div class="main-content-wrapper">
+    <div v-if="storyToDisplay.id" class="text-wrapper">
+      <p v-for="line in storyToDisplay.text"
+        :class="line.text[0] === '>' || line.text[0] == line.text[0].toLowerCase() ? 'text-line-green' : 'text-line-regular'">
+        {{ line.text }}</p>
+    </div>
   </div>
 
   <div class="dialogue-container" v-show="showDialogue" @click="showDialogue = false">
@@ -34,7 +37,7 @@ const openDialogue = function (context) {
 // --- Stories array management ---
 const stories = ref([])
 //(sent into the Navbar as a prop)
-const onStoriesAdded = function(newStories) {
+const onStoriesAdded = function (newStories) {
   console.log("NUTTSACK", newStories)
   stories.value = stories.value.concat(newStories)
 }
@@ -43,14 +46,14 @@ const onStoriesAdded = function(newStories) {
 
 const storyToDisplay = ref({})
 
-const selectStory = function(index) {
+const selectStory = function (index) {
   console.log("New story selected", index);
   storyToDisplay.value = stories.value[index]
   console.log(storyToDisplay.value)
 }
 
-const onStoryReady = function(story) {
-  const storyIndex = stories.value.map(s => s.id).indexOf(id);
+const onStoryReady = function (story) {
+  const storyIndex = stories.value.map(s => s.id).indexOf(story.id);
   stories.value[storyIndex].text = story.text;
 }
 
@@ -60,21 +63,45 @@ const onStoryReady = function(story) {
 
 <style scoped>
 .navbar {
-  position: absolute;
+  position: fixed;
+  z-index: 99;
   width: 100vw;
   bottom: 0;
   max-width: 100%;
 }
-.text-wrapper {
-  margin: auto;
-  width: 90%;
-  font-family: Arial, Helvetica, sans-serif;
-  color: #94bc88
+
+.main-content-wrapper {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
 }
+
+.text-wrapper {
+  background-color: #313131;
+  position: relative;
+  margin: auto;
+  padding-top: 2em;
+  padding-bottom: 100px;
+  width: 60%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.text-line-regular {
+  color: #6a6a6a;
+  line-height: 200%;
+}
+
+.text-line-green {
+  color: #94bc88;
+  line-height: 140%;
+}
+
 .dialogue-container {
   display: flex;
   /* background-color: rgb(0, 0, 0, 0.9); */
   position: absolute;
+  z-index: 100;
   height: 100%;
   width: 100%;
   justify-content: center;
