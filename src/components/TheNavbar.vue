@@ -8,8 +8,20 @@
       </select>
     </div>
     <div class="nav-items-right">
-      <button v-for="story, index in props.stories" class="navbar-input" @click="selectStory(index)">{{ index+1 }}</button>
-      <button class="navbar-input" id="add-stories-btn" @click="openImporter">+</button>
+      <button 
+        v-for="story, index in props.stories" 
+        class="navbar-input" 
+        @click="onNormalClick(index)"
+        @mousedown="startClickTimer(e)"
+        @mouseout="cancelClickTimer(e)"
+        >
+        {{ index+1 }}
+      </button>
+      <button 
+        class="navbar-input" 
+        id="add-stories-btn" 
+        @click="openImporter"
+      >+</button>
     </div>
   </nav>
 </template>
@@ -19,7 +31,7 @@ import { ref, watch } from 'vue';
 
 const props = defineProps(['stories'])
 
-// --- Outbout events: ---
+// --- Outbound events: ---
 const emit = defineEmits(['openDialogue', 'selectStory'])
 const openImporter = function() {
   emit("openDialogue", "importNewImage")
@@ -29,6 +41,7 @@ const selectStory = function(index) {
   emit("selectStory", index)
 }
 
+// --- Theme selection: ---
 const themes = ref([
   {
     text: 'Tomorrow',
@@ -44,7 +57,34 @@ const themes = ref([
   },
 ])
 
+// --- Long press handling: ---
+const clickTimer = ref(null)
+const longClick = ref(false)
 
+const startClickTimer = function() {
+  clickTimer.value = setTimeout(() => {
+    longClick.value = true
+    console.log("Bang!")
+  }, 500)
+}
+
+const cancelClickTimer = function() {
+  longClick.value = false
+  clearTimeout(clickTimer.value)
+  clickTimer.value = null
+}
+
+const onNormalClick = function(index) {
+  if (!longClick.value) {
+    selectStory(index)
+  }
+  clearTimeout(clickTimer.value)
+  clickTimer.value = null
+  longClick.value = false
+}
+
+// create a function to run on mouseUp that checks if the timer is over
+// the threshold. If so, do nothing and clear timer. If not, run selectStory(index).
 
 </script>
 
@@ -105,9 +145,12 @@ button.navbar-input {
   margin-inline: 5px;
 }
 
-button.navbar-input:hover,
-button.navbar-input:active {
+button.navbar-input:hover {
   background-color: #3f3f3f;
+}
+
+button.navbar-input:active {
+  background-color: #444;
 }
 
 #add-stories-btn {

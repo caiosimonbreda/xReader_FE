@@ -8,7 +8,7 @@ import axios from 'axios';
 import { ref } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
-const emit = defineEmits(['stories-added', 'story-ready'])
+const emit = defineEmits(['stories-added', 'story-ready', 'closeDialogue'])
 
 const uploadedImages = ref([])
 
@@ -45,6 +45,11 @@ const onConfirmButton = () => {
     uploadedImages.value.forEach((file) => {
       encodeImageToBase64(file.img, file.id)
     })
+
+    //close dialogue:
+    emit('closeDialogue')
+  } else {
+    //alert that input mustn't be empty
   }
 }
 
@@ -60,7 +65,7 @@ const encodeImageToBase64 = (img, id) => {
 //Send image to backend:
 const onSendImage = (base64img, id) => {
   getImageLightness(base64img).then((avgBrightness) => {
-    axios.post('http://127.0.0.1:3001/upload', {
+    axios.post('http://127.0.0.1:3000/upload', {
       base64img,
       avgBrightness,
       id

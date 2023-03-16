@@ -15,7 +15,7 @@
     <Dialogue @closeDialogue="showDialogue = false" @click.stop>
       <template #title>Import new greentexts</template>
       <template #content>
-        <Importer @stories-added="onStoriesAdded" @story-ready="onStoryReady" />
+        <Importer @stories-added="onStoriesAdded" @story-ready="onStoryReady" @closeDialogue="showDialogue = false" />
       </template>
     </Dialogue>
   </div>
@@ -67,10 +67,7 @@ const onStoryReady = function (story) {
     }
 
   })
-  console.log("check out my colors", story.text)
-  console.log("before", stories.value)
   stories.value[storyIndex].text = story.text;
-  console.log("after", stories.value)
 }
 </script>
 
