@@ -28,7 +28,6 @@ const onFileSelected = (event) => {
       id: uuidv4()
     }
   })
-  console.log(uploadedImages.value)
 }
 
 const onConfirmButton = () => {
@@ -85,7 +84,6 @@ const onSendImage = (base64img, id) => {
         });
       })
 
-      //console.log(newLines)
       emit("story-ready", {id: res.data.id, text: newLines})
 
     }).catch((err) => {

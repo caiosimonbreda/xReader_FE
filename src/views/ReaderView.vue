@@ -67,7 +67,6 @@ const onStoriesAdded = function (newStories) {
 }
 // deleting a story:
 const deleteStory = function (index) {
-  console.log(`Deleting story with index ${index}`)
   stories.value.splice(index, 1)
   
   if (stories.value[index-1]) {
@@ -92,7 +91,6 @@ const selectStory = function (index) {
 
 const onStoryReady = function (story) {
   const storyIndex = stories.value.map(s => s.id).indexOf(story.id);
-  console.log(`storyIndex is ${storyIndex}`)
   story.text.forEach((line, index) => {
 
     if (line.text[0] == '>' && line.text[1] != '>') {

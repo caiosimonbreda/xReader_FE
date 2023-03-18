@@ -78,7 +78,6 @@ const showDeleteActionForIndex = ref(null);
 const startClickTimer = function(index) {
   clickTimer.value = setTimeout(() => {
     longClick.value = true
-    console.log("Bang!", index)
     //add delete class to page button
     showDeleteActionForIndex.value = index
   }, 500)
