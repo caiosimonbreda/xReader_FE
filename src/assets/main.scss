@@ -1,0 +1,731 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.app-container {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    max-height: fit-content;
+    max-width: 100%;
+}
+
+// Theming:
+
+.tomorrow {
+    $bgColor: #313131;
+    $navColor: #181818;
+    $accentColor: #6f6f6f;
+    $greentextColor: #829F5E;
+    $btnColor: #2f2f2f;
+    $btnColorHover: #3f3f3f;
+    $btnColorActive: #444;
+    $btnTextColor: #a6a6a6;
+    $deleteButtonColor: #a22727;
+    $btnBorderRadius: 5px;
+
+    .reader-view {
+
+        .navbar-container {
+            position: fixed;
+            z-index: 99;
+            width: 100vw;
+            bottom: 0;
+            max-width: 100%;
+        }
+
+        .main-content-wrapper {
+            background-color: $bgColor;
+            position: absolute;
+            min-height: 100%;
+            max-height: fit-content;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .text-wrapper {
+            background-color: $bgColor;
+            position: relative;
+            margin: auto;
+            padding-top: 2em;
+            padding-bottom: 100px;
+            width: 60%;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 140%;
+        }
+
+        /* Loader (Courtesy of loading.io): */
+        .loader-wrapper {
+            position: absolute;
+            display: flex;
+            width: 100%;
+            transform: translate(0, 40vh);
+        }
+
+        .lds-dual-ring {
+            margin: auto;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-dual-ring:after {
+            border: 3px solid $accentColor;
+            border-color: $accentColor transparent $accentColor transparent;
+            content: "";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        .dialogue-container {
+            display: flex;
+            /* background-color: rgb(0, 0, 0, 0.9); */
+            position: absolute;
+            z-index: 100;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    .navbar {
+        background-color: $navColor;
+        height: 58px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1em;
+        padding-right: 0.25em;
+        padding-block: 10px;
+
+        .nav-items-left {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+        }
+
+        .nav-items-right {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 73%;
+            overflow-x: auto;
+        }
+
+        .logo-text {
+            color: $greentextColor;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-right: 1em;
+            font-weight: lighter;
+            font-size: 1.2em;
+        }
+
+        .navbar-input {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            height: 100%;
+            border: none;
+
+            &:active {
+                background-color: $btnColorActive;
+            }
+
+            &:hover {
+                background-color: $btnColorHover;
+            }
+
+            &.delete {
+                background-color: $deleteButtonColor;
+            }
+
+            &.selected {
+                background-color: $btnColorHover;
+            }
+        }
+
+        select.navbar-input {
+            padding-left: 1em;
+            border-right: 1em solid transparent;
+            padding-right: 0.8em;
+        }
+
+        button.navbar-input {
+            min-width: 38px;
+            width: 38px;
+            margin-inline: 5px;
+        }
+
+        #add-stories-btn {
+            width: 38px;
+            font-size: 1.15em;
+        }
+    }
+
+    .dialogue {
+        color: $btnTextColor;
+        background-color: $navColor;
+        border-radius: $btnBorderRadius;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 1em;
+
+        &-header-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding-bottom: 1.6em;
+        }
+
+
+        &-title {
+            color: $btnTextColor;
+            font-weight: normal;
+            font-size: 1.2em;
+        }
+
+        &-close-button {
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            font-size: 0.8em;
+            background-color: transparent;
+            border: none;
+            width: 20px;
+            height: 20px;
+
+            &:hover {
+                background-color: $btnColor;
+            }
+        }
+    }
+
+    .importer {
+        input[type="file"] {
+            display: block;
+        }
+
+        input {
+            color: $btnTextColor;
+            border: 1px solid $accentColor;
+            border-radius: $btnBorderRadius;
+            padding: 1em;
+            width: 26em;
+            margin: auto;
+            margin-bottom: 1em;
+        }
+
+        .regular-button {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            padding: 0.7em 1.2em;
+            height: 100%;
+            border: none;
+
+            &:hover,
+            &:active {
+                background-color: $btnColorHover;
+            }
+        }
+    }
+}
+
+.yoitsuba {
+    $bgColor: rgb(248, 234, 224);
+    $navColor: #e4c8b6;
+    $accentColor: maroon;
+    $greentextColor: #789922;
+    $btnColor: #fed;
+    $btnColorHover: rgb(250, 223, 202);
+    $btnColorActive: rgba(255, 101, 45, 0.225);
+    $btnTextColor: #000;
+    $deleteButtonColor: #a22727;
+    $btnBorderRadius: 5px;
+
+    .reader-view {
+
+        .navbar-container {
+            position: fixed;
+            z-index: 99;
+            width: 100vw;
+            bottom: 0;
+            max-width: 100%;
+        }
+
+        .main-content-wrapper {
+            background-color: $bgColor;
+            position: absolute;
+            min-height: 100%;
+            max-height: fit-content;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .text-wrapper {
+            background-color: $bgColor;
+            position: relative;
+            margin: auto;
+            padding-top: 2em;
+            padding-bottom: 100px;
+            width: 60%;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 140%;
+        }
+
+        /* Loader (Courtesy of loading.io): */
+        .loader-wrapper {
+            position: absolute;
+            display: flex;
+            width: 100%;
+            transform: translate(0, 40vh);
+        }
+
+        .lds-dual-ring {
+            margin: auto;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-dual-ring:after {
+            border: 3px solid $accentColor;
+            border-color: $accentColor transparent $accentColor transparent;
+            content: "";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        .dialogue-container {
+            display: flex;
+            /* background-color: rgb(0, 0, 0, 0.9); */
+            position: absolute;
+            z-index: 100;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    .navbar {
+        background-color: $navColor;
+        height: 58px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1em;
+        padding-right: 0.25em;
+        padding-block: 10px;
+
+        .nav-items-left {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+        }
+
+        .nav-items-right {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 73%;
+            overflow-x: auto;
+        }
+
+        .logo-text {
+            color: $greentextColor;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-right: 1em;
+            font-weight: lighter;
+            font-size: 1.2em;
+        }
+
+        .navbar-input {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            height: 100%;
+            border: none;
+
+            &:active {
+                background-color: $btnColorActive;
+            }
+
+            &:hover {
+                background-color: $btnColorHover;
+            }
+
+            &.delete {
+                background-color: $deleteButtonColor;
+            }
+
+            &.selected {
+                background-color: $btnColorActive;
+            }
+        }
+
+        select.navbar-input {
+            padding-left: 1em;
+            border-right: 1em solid transparent;
+            padding-right: 0.8em;
+        }
+
+        button.navbar-input {
+            min-width: 38px;
+            width: 38px;
+            margin-inline: 5px;
+        }
+
+        #add-stories-btn {
+            width: 38px;
+            font-size: 1.15em;
+        }
+    }
+
+    .dialogue {
+        color: $btnTextColor;
+        background-color: $navColor;
+        border-radius: $btnBorderRadius;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 1em;
+
+        &-header-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding-bottom: 1.6em;
+        }
+
+
+        &-title {
+            color: $btnTextColor;
+            font-weight: normal;
+            font-size: 1.2em;
+        }
+
+        &-close-button {
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            font-size: 0.8em;
+            background-color: transparent;
+            border: none;
+            width: 20px;
+            height: 20px;
+
+            &:hover {
+                background-color: $btnColor;
+            }
+        }
+    }
+
+    .importer {
+        input[type="file"] {
+            display: block;
+        }
+
+        input {
+            color: $btnTextColor;
+            border: 1px solid $accentColor;
+            border-radius: $btnBorderRadius;
+            padding: 1em;
+            width: 26em;
+            margin: auto;
+            margin-bottom: 1em;
+        }
+
+        .regular-button {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            padding: 0.7em 1.2em;
+            height: 100%;
+            border: none;
+
+            &:hover,
+            &:active {
+                background-color: $btnColorHover;
+            }
+        }
+    }
+}
+
+.yoitsuba-b {
+    $bgColor: #d6daf0;
+    $navColor: #b7c5d9;
+    $accentColor: rgb(160, 166, 190);
+    $greentextColor: #789922;
+    $btnColor: #eef;
+    $btnColorHover: rgb(213, 218, 243);
+    $btnColorActive: rgb(213, 218, 243);
+    $btnTextColor: #000;
+    $deleteButtonColor: #a22727;
+    $btnBorderRadius: 5px;
+
+    .reader-view {
+
+        .navbar-container {
+            position: fixed;
+            z-index: 99;
+            width: 100vw;
+            bottom: 0;
+            max-width: 100%;
+        }
+
+        .main-content-wrapper {
+            background-color: $bgColor;
+            position: absolute;
+            min-height: 100%;
+            max-height: fit-content;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .text-wrapper {
+            background-color: $bgColor;
+            position: relative;
+            margin: auto;
+            padding-top: 2em;
+            padding-bottom: 100px;
+            width: 60%;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 140%;
+        }
+
+        /* Loader (Courtesy of loading.io): */
+        .loader-wrapper {
+            position: absolute;
+            display: flex;
+            width: 100%;
+            transform: translate(0, 40vh);
+        }
+
+        .lds-dual-ring {
+            margin: auto;
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+        }
+
+        .lds-dual-ring:after {
+            border: 3px solid $accentColor;
+            border-color: $accentColor transparent $accentColor transparent;
+            content: "";
+            display: block;
+            width: 64px;
+            height: 64px;
+            margin: 8px;
+            border-radius: 50%;
+            animation: lds-dual-ring 1.2s linear infinite;
+        }
+
+        .dialogue-container {
+            display: flex;
+            /* background-color: rgb(0, 0, 0, 0.9); */
+            position: absolute;
+            z-index: 100;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes lds-dual-ring {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    }
+
+    .navbar {
+        background-color: $navColor;
+        height: 58px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 1em;
+        padding-right: 0.25em;
+        padding-block: 10px;
+
+        .nav-items-left {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+        }
+
+        .nav-items-right {
+            display: flex;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            max-width: 73%;
+            overflow-x: auto;
+        }
+
+        .logo-text {
+            color: $greentextColor;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-right: 1em;
+            font-weight: lighter;
+            font-size: 1.2em;
+        }
+
+        .navbar-input {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            height: 100%;
+            border: none;
+
+            &:active {
+                background-color: $btnColorActive;
+            }
+
+            &:hover {
+                background-color: $btnColorHover;
+            }
+
+            &.delete {
+                background-color: $deleteButtonColor;
+            }
+
+            &.selected {
+                background-color: $btnColorActive;
+            }
+        }
+
+        select.navbar-input {
+            padding-left: 1em;
+            border-right: 1em solid transparent;
+            padding-right: 0.8em;
+        }
+
+        button.navbar-input {
+            min-width: 38px;
+            width: 38px;
+            margin-inline: 5px;
+        }
+
+        #add-stories-btn {
+            width: 38px;
+            font-size: 1.15em;
+        }
+    }
+
+    .dialogue {
+        color: $btnTextColor;
+        background-color: $navColor;
+        border-radius: $btnBorderRadius;
+        display: flex;
+        flex-direction: column;
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 1em;
+
+        &-header-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding-bottom: 1.6em;
+        }
+
+
+        &-title {
+            color: $btnTextColor;
+            font-weight: normal;
+            font-size: 1.2em;
+        }
+
+        &-close-button {
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            font-size: 0.8em;
+            background-color: transparent;
+            border: none;
+            width: 20px;
+            height: 20px;
+
+            &:hover {
+                background-color: $btnColor;
+            }
+        }
+    }
+
+    .importer {
+        input[type="file"] {
+            display: block;
+        }
+
+        input {
+            color: $btnTextColor;
+            border: 1px solid $accentColor;
+            border-radius: $btnBorderRadius;
+            padding: 1em;
+            width: 26em;
+            margin: auto;
+            margin-bottom: 1em;
+        }
+
+        .regular-button {
+            background-color: $btnColor;
+            color: $btnTextColor;
+            border-radius: $btnBorderRadius;
+            padding: 0.7em 1.2em;
+            height: 100%;
+            border: none;
+
+            &:hover,
+            &:active {
+                background-color: $btnColorHover;
+            }
+        }
+    }
+}

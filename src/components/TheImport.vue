@@ -1,6 +1,8 @@
 <template>
-  <input type="file" ref="imageInput" id="imageInput" accept="image/jpeg, image/png, image/jpg" multiple @change="onFileSelected" />
-  <button class="regular-button" @click="onConfirmButton">Do it!</button>
+  <div class="importer">
+    <input type="file" ref="imageInput" id="imageInput" accept="image/jpeg, image/png, image/jpg" multiple @change="onFileSelected" />
+    <button class="regular-button" @click="onConfirmButton">Do it!</button>
+  </div>
 </template>
 
 <script setup>
@@ -65,7 +67,7 @@ const encodeImageToBase64 = (img, id) => {
 //Send image to backend:
 const onSendImage = (base64img, id) => {
   getImageLightness(base64img).then((avgBrightness) => {
-    axios.post('http://127.0.0.1:3000/upload', {
+    axios.post('http://127.0.0.1:3001/upload', {
       base64img,
       avgBrightness,
       id
@@ -132,31 +134,4 @@ async function getImageLightness(imageSrc) {
 </script>
 
 <style scoped>
-input[type="file"] {
-  display: block;
-}
-
-input {
-  color: #a6a6a6;
-  border: 1px solid #555;
-  border-radius: 5px;
-  padding: 1em;
-  width: 26em;
-  margin: auto;
-  margin-bottom: 1em;
-}
-
-.regular-button {
-  background-color: #2f2f2f;
-  padding: 0.7em 1.2em;
-  color: #a6a6a6;
-  height: 100%;
-  border-radius: 5px;
-  border: none;
-}
-
-.regular-button:hover,
-.regular-button:active {
-  background-color: #3f3f3f;
-}
 </style>

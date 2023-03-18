@@ -1,23 +1,35 @@
 <template>
-  <Navbar class="navbar" :stories="stories" @openDialogue="openDialogue" @selectStory="selectStory" />
-<!-- :class="line.text[0] === '>' || line.text[0] == line.text[0].toLowerCase() ? 'text-line-green' : 'text-line-regular'"> -->
-  <div class="main-content-wrapper">
-    <div v-if="storyToDisplay.id" class="text-wrapper">
-      <p 
-        v-for="line in storyToDisplay.text"
-        :style="`color: ${line.color};`"
-      >
-        {{ line.text }}</p>
+  <div class="reader-view">
+    <Navbar 
+      class="navbar-container" 
+      :stories="stories" 
+      :selected-story-index="selectedStoryIndex" 
+      @openDialogue="openDialogue" 
+      @selectStory="selectStory" 
+      @deleteStory="deleteStory"
+      @changeTheme="selectTheme"
+    />
+    <div class="main-content-wrapper">
+      <div v-if="storyToDisplay.text" class="text-wrapper">
+        <p 
+          v-for="line in storyToDisplay.text"
+          :style="`color: ${line.color};`"
+        >
+          {{ line.text }}</p>
+      </div>
+      <div v-if="storyToDisplay.id && !storyToDisplay.text" class="loader-wrapper">
+        <div class="lds-dual-ring"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="dialogue-container" v-show="showDialogue" @click="showDialogue = false">
-    <Dialogue @closeDialogue="showDialogue = false" @click.stop>
-      <template #title>Import new greentexts</template>
-      <template #content>
-        <Importer @stories-added="onStoriesAdded" @story-ready="onStoryReady" @closeDialogue="showDialogue = false" />
-      </template>
-    </Dialogue>
+    <div class="dialogue-container" v-show="showDialogue" @click="showDialogue = false">
+      <Dialogue @closeDialogue="showDialogue = false" @click.stop>
+        <template #title>Import new greentexts</template>
+        <template #content>
+          <Importer @stories-added="onStoriesAdded" @story-ready="onStoryReady" @closeDialogue="showDialogue = false" />
+        </template>
+      </Dialogue>
+    </div>
   </div>
 </template>
 
@@ -26,6 +38,14 @@ import { ref } from 'vue';
 import Navbar from '../components/TheNavbar.vue'
 import Dialogue from '../components/TheDialogue.vue'
 import Importer from '../components/TheImport.vue'
+
+// --- Emits: ---
+
+const emit = defineEmits(['changeTheme'])
+
+const selectTheme = function(theme) {
+  emit("changeTheme", theme)
+}
 
 // --- Dialogue behaviour: --- 
 const showDialogue = ref(true)
@@ -36,20 +56,37 @@ const openDialogue = function (context) {
   showDialogue.value = true
 }
 
-// --- Stories array management ---
+// --- Stories array management: ---
 const stories = ref([])
 //(sent into the Navbar as a prop)
+
+// adding new stories:
 const onStoriesAdded = function (newStories) {
-  console.log("NUTTSACK", newStories)
   stories.value = stories.value.concat(newStories)
   selectStory(stories.value.length - 1)
 }
+// deleting a story:
+const deleteStory = function (index) {
+  console.log(`Deleting story with index ${index}`)
+  stories.value.splice(index, 1)
+  
+  if (stories.value[index-1]) {
+    selectStory(index-1)
+  } else if (stories.value[index+1]) {
+    selectStory(index+1)
+  } else {
+    storyToDisplay.value = {}
+    selectedStoryIndex.value = null
+  }
+}
 
-// --- Story display ---
+
+// --- Story display: ---
 const storyToDisplay = ref({})
+const selectedStoryIndex = ref(null)
 
 const selectStory = function (index) {
-  console.log("New story selected", stories.value[index]);
+  selectedStoryIndex.value = index
   storyToDisplay.value = stories.value[index]
 }
 
@@ -72,41 +109,7 @@ const onStoryReady = function (story) {
 </script>
 
 <style scoped>
-.navbar {
-  position: fixed;
-  z-index: 99;
-  width: 100vw;
-  bottom: 0;
-  max-width: 100%;
-}
 
-.main-content-wrapper {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-}
-
-.text-wrapper {
-  background-color: #313131;
-  position: relative;
-  margin: auto;
-  padding-top: 2em;
-  padding-bottom: 100px;
-  width: 60%;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 140%;
-}
-.dialogue-container {
-  display: flex;
-  /* background-color: rgb(0, 0, 0, 0.9); */
-  position: absolute;
-  z-index: 100;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-}
 </style>
 
 

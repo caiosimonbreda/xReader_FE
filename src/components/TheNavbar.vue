@@ -2,7 +2,7 @@
   <nav class="navbar">
     <div class="nav-items-left">
       <h1 class="logo-text">/x/Reader</h1>
-      <select name="theme-selector" id="theme-selector" class="navbar-input">
+      <select name="theme-selector" id="theme-selector" class="navbar-input" @change="emit('changeTheme', $event.target.value)">
         <option v-for="theme in themes" :value="theme.value">{{ theme.text }}
         </option>
       </select>
@@ -10,12 +10,12 @@
     <div class="nav-items-right">
       <button 
         v-for="story, index in props.stories" 
-        class="navbar-input" 
-        @click="onNormalClick(index)"
-        @mousedown="startClickTimer(e)"
-        @mouseout="cancelClickTimer(e)"
+        :class="`navbar-input ${getButtonClass(index)}`"
+        @click="onMouseUp(index)"
+        @mousedown="startClickTimer(index)"
+        @mouseout="cancelClickTimer(index)"
         >
-        {{ index+1 }}
+        {{ showDeleteActionForIndex !== index ? index+1 : 'DEL'}}
       </button>
       <button 
         class="navbar-input" 
@@ -27,12 +27,12 @@
 </template>
   
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, computed } from 'vue';
 
-const props = defineProps(['stories'])
+const props = defineProps(['stories', 'selectedStoryIndex'])
 
 // --- Outbound events: ---
-const emit = defineEmits(['openDialogue', 'selectStory'])
+const emit = defineEmits(['openDialogue', 'selectStory', 'deleteStory', 'changeTheme'])
 const openImporter = function() {
   emit("openDialogue", "importNewImage")
 }
@@ -52,111 +52,59 @@ const themes = ref([
     value: 'yoitsuba'
   },
   {
-    text: 'Photon',
-    value: 'photon'
+    text: 'Yoitsuba-B',
+    value: 'yoitsuba-b'
   },
 ])
+
+// --- Page button class management: ---
+const getButtonClass = function(index) {
+  if (showDeleteActionForIndex.value === index) {
+    return 'delete'
+  } else if (props.selectedStoryIndex === index) {
+    return 'selected'
+  } else {
+    return ''
+  }
+}
+
 
 // --- Long press handling: ---
 const clickTimer = ref(null)
 const longClick = ref(false)
 
-const startClickTimer = function() {
+const showDeleteActionForIndex = ref(null);
+
+const startClickTimer = function(index) {
   clickTimer.value = setTimeout(() => {
     longClick.value = true
-    console.log("Bang!")
+    console.log("Bang!", index)
+    //add delete class to page button
+    showDeleteActionForIndex.value = index
   }, 500)
 }
 
 const cancelClickTimer = function() {
   longClick.value = false
+  showDeleteActionForIndex.value = null
   clearTimeout(clickTimer.value)
   clickTimer.value = null
 }
 
-const onNormalClick = function(index) {
+const onMouseUp = function(index) {
   if (!longClick.value) {
     selectStory(index)
+  } else {
+    emit('deleteStory', index)
   }
+  showDeleteActionForIndex.value = null
   clearTimeout(clickTimer.value)
   clickTimer.value = null
   longClick.value = false
 }
-
-// create a function to run on mouseUp that checks if the timer is over
-// the threshold. If so, do nothing and clear timer. If not, run selectStory(index).
-
 </script>
 
 <style scoped>
-.navbar {
-  background-color: #181818;
-  height: 58px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 1em;
-  padding-right: 0.25em;
-  padding-block: 10px;
-}
-
-.nav-items-left {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  align-items: center;
-}
-
-.nav-items-right {
-  display: flex;
-  flex-direction: row;
-  height: 100%;
-  align-items: center;
-  justify-content: flex-end;
-  max-width: 73%;
-  overflow-x: auto;
-}
-
-.logo-text {
-  font-family: Arial, Helvetica, sans-serif;
-  margin-right: 1em;
-  color: #829F5E;
-  font-weight: lighter;
-  font-size: 1.2em;
-}
-
-.navbar-input {
-  background-color: #2f2f2f;
-  color: #a6a6a6;
-  height: 100%;
-  border-radius: 5px;
-  border: none;
-}
-
-select.navbar-input {
-  padding-left: 1em;
-  border-right: 1em solid transparent;
-  padding-right: 0.8em;
-}
-
-button.navbar-input {
-  min-width: 38px;
-  width: 38px;
-  margin-inline: 5px;
-}
-
-button.navbar-input:hover {
-  background-color: #3f3f3f;
-}
-
-button.navbar-input:active {
-  background-color: #444;
-}
-
-#add-stories-btn {
-  width: 38px;
-  font-size: 1.15em;
-}
 </style>
 
 
