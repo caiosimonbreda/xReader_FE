@@ -12,8 +12,11 @@
         v-for="story, index in props.stories" 
         :class="`navbar-input ${getButtonClass(index)}`"
         @click="onMouseUp(index)"
+        @touchend="onMouseUp(index)"
         @mousedown="startClickTimer(index)"
+        @touchstart="startClickTimer(index)"
         @mouseout="cancelClickTimer(index)"
+        @touchmove="cancelClickTimer(index)"
         >
         {{ showDeleteActionForIndex !== index ? index+1 : 'DEL'}}
       </button>
@@ -44,16 +47,16 @@ const selectStory = function(index) {
 // --- Theme selection: ---
 const themes = ref([
   {
-    text: 'Tomorrow',
-    value: 'tomorrow'
+    text: 'Yoitsuba-B',
+    value: 'yoitsuba-b'
   },
   {
     text: 'Yoitsuba',
     value: 'yoitsuba'
   },
   {
-    text: 'Yoitsuba-B',
-    value: 'yoitsuba-b'
+    text: 'Tomorrow',
+    value: 'tomorrow'
   },
 ])
 

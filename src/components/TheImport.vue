@@ -66,7 +66,7 @@ const encodeImageToBase64 = (img, id) => {
 //Send image to backend:
 const onSendImage = (base64img, id) => {
   getImageLightness(base64img).then((avgBrightness) => {
-    axios.post('http://127.0.0.1:3001/upload', {
+    axios.post('http://127.0.0.1:3000/upload', {
       base64img,
       avgBrightness,
       id

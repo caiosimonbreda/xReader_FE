@@ -13,7 +13,7 @@
       <div v-if="storyToDisplay.text" class="text-wrapper">
         <p 
           v-for="line in storyToDisplay.text"
-          :style="`color: ${line.color};`"
+          :class="line.class"
         >
           {{ line.text }}</p>
       </div>
@@ -94,11 +94,11 @@ const onStoryReady = function (story) {
   story.text.forEach((line, index) => {
 
     if (line.text[0] == '>' && line.text[1] != '>') {
-      line.color = '#869F5F'
+      line.class = 'green-text'
     } else if (line.text[0].toLowerCase() == line.text[0] && story.text[index-1]) {
-      line.color = story.text[index-1].text[0] == '>' ? '#869F5F' : '#888'
+      line.class = story.text[index-1].text[0] == '>' ? 'green-text' : 'normal-text'
     } else {
-      line.color = '#888'
+      line.class = 'normal-text'
     }
 
   })

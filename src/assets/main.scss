@@ -23,11 +23,12 @@
     $bgColor: #313131;
     $navColor: #181818;
     $accentColor: #6f6f6f;
-    $greentextColor: #829F5E;
+    $greentextColor: #b5bd68;
+    $normalTextColor: #c5c8c6;
     $btnColor: #2f2f2f;
     $btnColorHover: #3f3f3f;
     $btnColorActive: #444;
-    $btnTextColor: #a6a6a6;
+    $btnTextColor: #c5c8c6;
     $deleteButtonColor: #a22727;
     $btnBorderRadius: 5px;
 
@@ -59,6 +60,14 @@
             width: 60%;
             font-family: Arial, Helvetica, sans-serif;
             line-height: 140%;
+
+            .green-text {
+                color: $greentextColor
+            }
+
+            .normal-text {
+                color: $normalTextColor
+            }
         }
 
         /* Loader (Courtesy of loading.io): */
@@ -117,7 +126,7 @@
         justify-content: space-between;
         align-items: center;
         padding-left: 1em;
-        padding-right: 0.25em;
+        // padding-right: 0.25em;
         padding-block: 10px;
 
         .nav-items-left {
@@ -130,11 +139,12 @@
         .nav-items-right {
             display: flex;
             flex-direction: row;
+            flex-wrap: nowrap;
             height: 100%;
             align-items: center;
-            justify-content: flex-end;
-            max-width: 73%;
-            overflow-x: auto;
+            justify-content: space-between;
+            max-width: calc(100vw - 260px);
+            overflow-x: scroll;
         }
 
         .logo-text {
@@ -184,6 +194,7 @@
         #add-stories-btn {
             width: 38px;
             font-size: 1.15em;
+            margin-right: 0.5em;
         }
     }
 
@@ -257,10 +268,11 @@
 }
 
 .yoitsuba {
-    $bgColor: rgb(248, 234, 224);
+    $bgColor: #f0e0d6;
     $navColor: #e4c8b6;
     $accentColor: maroon;
     $greentextColor: #789922;
+    $normalTextColor: maroon;
     $btnColor: #fed;
     $btnColorHover: rgb(250, 223, 202);
     $btnColorActive: rgba(255, 101, 45, 0.225);
@@ -296,6 +308,14 @@
             width: 60%;
             font-family: Arial, Helvetica, sans-serif;
             line-height: 140%;
+
+            .green-text {
+                color: $greentextColor
+            }
+
+            .normal-text {
+                color: $normalTextColor
+            }
         }
 
         /* Loader (Courtesy of loading.io): */
@@ -367,11 +387,12 @@
         .nav-items-right {
             display: flex;
             flex-direction: row;
+            flex-wrap: nowrap;
             height: 100%;
             align-items: center;
-            justify-content: flex-end;
-            max-width: 73%;
-            overflow-x: auto;
+            justify-content: space-between;
+            max-width: calc(100vw - 260px);
+            overflow-x: scroll;
         }
 
         .logo-text {
@@ -403,6 +424,7 @@
 
             &.selected {
                 background-color: $btnColorActive;
+                border: 2px solid $btnColor;
             }
         }
 
@@ -420,6 +442,7 @@
 
         #add-stories-btn {
             width: 38px;
+            margin-right: 0.25em;
             font-size: 1.15em;
         }
     }
@@ -494,10 +517,11 @@
 }
 
 .yoitsuba-b {
-    $bgColor: #d6daf0;
+    $bgColor: #eef2ff;
     $navColor: #b7c5d9;
     $accentColor: rgb(160, 166, 190);
     $greentextColor: #789922;
+    $normalTextColor: black;
     $btnColor: #eef;
     $btnColorHover: rgb(213, 218, 243);
     $btnColorActive: rgb(213, 218, 243);
@@ -533,6 +557,14 @@
             width: 60%;
             font-family: Arial, Helvetica, sans-serif;
             line-height: 140%;
+
+            .green-text {
+                color: $greentextColor
+            }
+
+            .normal-text {
+                color: $normalTextColor
+            }
         }
 
         /* Loader (Courtesy of loading.io): */
@@ -604,11 +636,12 @@
         .nav-items-right {
             display: flex;
             flex-direction: row;
+            flex-wrap: nowrap;
             height: 100%;
             align-items: center;
-            justify-content: flex-end;
-            max-width: 73%;
-            overflow-x: auto;
+            justify-content: space-between;
+            max-width: calc(100vw - 260px);
+            overflow-x: scroll;
         }
 
         .logo-text {
@@ -620,11 +653,13 @@
         }
 
         .navbar-input {
+            display: inline-block;
             background-color: $btnColor;
             color: $btnTextColor;
             border-radius: $btnBorderRadius;
             height: 100%;
             border: none;
+            flex-shrink: 0;
 
             &:active {
                 background-color: $btnColorActive;
@@ -640,6 +675,7 @@
 
             &.selected {
                 background-color: $btnColorActive;
+                border: 2px solid $btnColor;
             }
         }
 
@@ -657,6 +693,7 @@
 
         #add-stories-btn {
             width: 38px;
+            margin-right: 0.25em;
             font-size: 1.15em;
         }
     }
