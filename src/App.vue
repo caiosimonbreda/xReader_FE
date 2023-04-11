@@ -8,7 +8,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { ref } from 'vue';
 
-const currentTheme = ref("yoitsuba-b")
+const currentTheme = ref("tomorrow")
 
 const changeTheme = function(newTheme) {
   currentTheme.value = newTheme

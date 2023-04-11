@@ -31,51 +31,49 @@ const onFileSelected = (event) => {
 }
 
 const onConfirmButton = () => {
-
   if (uploadedImages.value.length > 0) {
-    //emit stories array containing only IDs to parent comp. to form pages
-    console.log("emitting stories-added")
+    // emit stories array containing only IDs to parent comp. to form pages
+    //console.log("emitting stories-added")
     emit('stories-added', uploadedImages.value.map((file) => {
-      return { id: file.id}
+      return { id: file.id, fileName: file.img.name }
     }))
 
-    //clear input:
+    // clear input:
     imageInput.value.value = null
 
-    //send each image over to be encoded and sent to backend for processing + OCR
+    // send each image over to be encoded and sent to backend for processing + OCR
     uploadedImages.value.forEach((file) => {
+      console.log(file)
       encodeImageToBase64(file.img, file.id)
     })
 
-    //close dialogue:
+    // close dialogue:
     emit('closeDialogue')
   } else {
-    //alert that input mustn't be empty
+    // alert that input mustn't be empty
   }
 }
 
-const encodeImageToBase64 = (img, id) => {
+const encodeImageToBase64 = (img, id) => { 
   const fr = new FileReader();
   fr.onloadend = function () {
-    //when done encoding, send image over to backend
-    onSendImage(fr.result, id)
+    // when done encoding, send image over to backend
+    onSendImage(fr.result, id, img.name) 
   }
   fr.readAsDataURL(img);
 }
 
-//Send image to backend:
-const onSendImage = (base64img, id) => {
+// Send image to backend:
+const onSendImage = (base64img, id, fileName) => {
   getImageLightness(base64img).then((avgBrightness) => {
     axios.post('http://127.0.0.1:3000/upload', {
       base64img,
       avgBrightness,
-      id
-    }).then((res) => { //on response from server after OCR, handle text lines
-
+      id,
+      fileName
+    }).then((res) => { // on response from server after OCR, handle text lines
       console.log(res)
-
       let newLines = []
-
       res.data.text.forEach((paragraph) => {
         paragraph.lines.forEach((line) => {
           let newLine = { ...line }
@@ -84,7 +82,7 @@ const onSendImage = (base64img, id) => {
         });
       })
 
-      emit("story-ready", {id: res.data.id, text: newLines})
+      emit("story-ready", {id: res.data.id, text: newLines, fileName})
 
     }).catch((err) => {
       console.log(err)

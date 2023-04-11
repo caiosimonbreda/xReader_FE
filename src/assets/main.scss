@@ -28,17 +28,21 @@
     $btnColor: #2f2f2f;
     $btnColorHover: #3f3f3f;
     $btnColorActive: #444;
-    $btnTextColor: #c5c8c6;
+    $btnTextColor: #9e9e9e;
     $deleteButtonColor: #a22727;
     $btnBorderRadius: 5px;
+    $menuWidth: 320px;
 
     .reader-view {
 
         .navbar-container {
             position: fixed;
             z-index: 99;
-            width: 100vw;
-            bottom: 0;
+            flex-direction: column;
+            width: $menuWidth;
+            height: 100%;
+            top: 0;
+            right: 0;
             max-width: 100%;
         }
 
@@ -48,6 +52,7 @@
             min-height: 100%;
             max-height: fit-content;
             width: 100%;
+            padding-right: $menuWidth;
             z-index: 1;
         }
 
@@ -74,26 +79,26 @@
         .loader-wrapper {
             position: absolute;
             display: flex;
-            width: 100%;
-            transform: translate(0, 40vh);
+            width: calc(100% - $menuWidth);
+            transform: translate(0, calc(50vh - 64px));
         }
 
         .lds-dual-ring {
             margin: auto;
             display: inline-block;
-            width: 80px;
-            height: 80px;
+            width: 64px;
+            height: 64px;
         }
 
         .lds-dual-ring:after {
-            border: 3px solid $accentColor;
-            border-color: $accentColor transparent $accentColor transparent;
+            border: 1px solid $btnTextColor;
+            border-color: $btnTextColor transparent $btnTextColor transparent;
             content: "";
             display: block;
             width: 64px;
             height: 64px;
             margin: 8px;
-            border-radius: 50%;
+            border-radius: 100%;
             animation: lds-dual-ring 1.2s linear infinite;
         }
 
@@ -106,7 +111,6 @@
             width: 100%;
             justify-content: center;
             align-items: center;
-            
         }
 
         @keyframes lds-dual-ring {
@@ -122,46 +126,129 @@
 
     .navbar {
         background-color: $navColor;
-        height: 58px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        padding-left: 1em;
-        // padding-right: 0.25em;
-        padding-block: 10px;
+        border-left: 1px solid $accentColor;
 
-        .nav-items-left {
+        .navbar-story-list-wrapper {
             display: flex;
-            flex-direction: row;
-            height: 100%;
-            align-items: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            max-height: 100%;
+            overflow: scroll;
+            z-index: 99;
+            .navbar-story {
+                display: flex;
+                align-items: center;
+                font-size: 14px;
+                justify-content: space-between;
+                padding-right: 16px;
+                background-color: $navColor;
+                color: $btnTextColor;
+                min-height: 48px;
+                max-height: 48px;
+                width: 100%;
+                border: none;
+                outline: 1px solid $accentColor;
+
+                &-button {
+                    display: flex;
+                    border: none;
+                    align-items: center;
+                    background-color: transparent;
+                    height: 100%;
+                    width: 100%;
+                    color: $btnTextColor;
+                    margin: 0;
+                    padding-inline: 16px;
+                }
+
+                &-delete-button {
+                    display: flex;
+                    border: none;
+                    background-color: transparent;
+                    color: $accentColor;
+                    margin: 0;
+                    padding: 0;
+                    opacity: 0;
+                }
+
+                &:last-child {
+                    border-bottom: 1px solid $accentColor;
+                }
+    
+                &:hover {
+                    background-color: $bgColor;
+
+                    .navbar-story-delete-button {
+                        opacity: 1;
+
+                        &:hover {
+                            color: $btnTextColor;
+                        }
+                    }
+                }
+    
+                &.delete {
+                    background-color: $deleteButtonColor;
+                }
+    
+                &.selected {
+                    background-color: $bgColor;
+                } 
+            }
         }
 
-        .nav-items-right {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            height: 100%;
-            align-items: center;
-            justify-content: space-between;
-            max-width: calc(100vw - 260px);
-            overflow-x: scroll;
-        }
+        .navbar-controls {
+            outline: 1px solid $accentColor;
 
-        .logo-text {
-            color: $greentextColor;
-            font-family: Arial, Helvetica, sans-serif;
-            margin-right: 1em;
-            font-weight: lighter;
-            font-size: 1.2em;
+            .font-size-controls {
+                display: flex;
+
+                button {
+                    width: 100%;
+                }
+            }
+
+            .dropdown-controls {
+                display: flex;
+                flex-direction: column;
+                padding: 32px;
+                padding-left: 20px;
+                gap: 32px;
+
+                .dropdown-wrapper {
+                    display: flex;
+                    align-items: center;
+
+                    .navbar-icon {
+                        color: $btnTextColor !important;
+                    }
+
+                    .select-border {
+                        outline: 1px solid $accentColor;
+                        padding: 0;
+                        margin-left: 20px;
+                        width: 100%;
+                    }
+
+                    select.navbar-input {
+                        padding-inline: 14px;
+                        border-right: 16px solid transparent;
+                        border-bottom: none;
+                        font-size: 14px;
+                    }
+                }
+            }
         }
 
         .navbar-input {
             background-color: $btnColor;
             color: $btnTextColor;
-            border-radius: $btnBorderRadius;
-            height: 100%;
+            height: 48px;
+            width: 100%;
             border: none;
+            outline: 1px solid $accentColor;
 
             &:active {
                 background-color: $btnColorActive;
@@ -170,30 +257,15 @@
             &:hover {
                 background-color: $btnColorHover;
             }
-
-            &.delete {
-                background-color: $deleteButtonColor;
-            }
-
-            &.selected {
-                background-color: $btnColorHover;
-            }
-        }
-
-        select.navbar-input {
-            padding-left: 1em;
-            border-right: 1em solid transparent;
-            padding-right: 0.8em;
         }
 
         button.navbar-input {
             min-width: 38px;
             width: 38px;
-            margin-inline: 5px;
         }
 
         #add-stories-btn {
-            width: 38px;
+            width: 100%;
             font-size: 1.15em;
             margin-right: 0.5em;
         }
@@ -202,63 +274,72 @@
     .dialogue {
         color: $btnTextColor;
         background-color: $navColor;
-        border-radius: $btnBorderRadius;
+        outline: 1px solid $accentColor;
         display: flex;
         flex-direction: column;
         font-family: Arial, Helvetica, sans-serif;
-        padding: 1em;
 
         &-header-wrapper {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            padding-bottom: 1.6em;
+            align-items: center;
+            outline: 1px solid $accentColor;
         }
 
 
         &-title {
             color: $btnTextColor;
             font-weight: normal;
-            font-size: 1.2em;
+            margin-left: 8px;
         }
 
         &-close-button {
-            color: $btnTextColor;
-            border-radius: $btnBorderRadius;
-            font-size: 0.8em;
+            outline: 1px solid $accentColor;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            height: 38px;
+            width: 38px;
+            align-items: center;
+            justify-content: center;
+            color: $accentColor;
             background-color: transparent;
             border: none;
-            width: 20px;
-            height: 20px;
 
             &:hover {
-                background-color: $btnColor;
+                color: $btnTextColor;
             }
         }
     }
 
     .importer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 1em 1.5em 1.5em 1.5em;
+
         input[type="file"] {
             display: block;
+            background-color: transparent;
         }
 
         input {
             color: $btnTextColor;
-            border: 1px solid $accentColor;
-            border-radius: $btnBorderRadius;
             padding: 1em;
-            width: 26em;
+            width: 100%em;
             margin: auto;
-            margin-bottom: 1em;
+            margin-bottom: 32px;
         }
 
         .regular-button {
-            background-color: $btnColor;
+            background-color: transparent;
             color: $btnTextColor;
-            border-radius: $btnBorderRadius;
+            outline: 1px solid $accentColor;
             padding: 0.7em 1.2em;
             height: 100%;
             border: none;
+            margin: auto;
 
             &:hover,
             &:active {
@@ -335,14 +416,14 @@
         }
 
         .lds-dual-ring:after {
-            border: 3px solid $accentColor;
-            border-color: $accentColor transparent $accentColor transparent;
+            border: 1px solid $btnTextColor;
+            border-color: $btnTextColor transparent $btnTextColor transparent;
             content: "";
             display: block;
             width: 64px;
             height: 64px;
             margin: 8px;
-            border-radius: 50%;
+            border-radius: 0%;
             animation: lds-dual-ring 1.2s linear infinite;
         }
 

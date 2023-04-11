@@ -1,46 +1,64 @@
 <template>
   <nav class="navbar">
-    <div class="nav-items-left">
-      <h1 class="logo-text">/x/Reader</h1>
-      <select name="theme-selector" id="theme-selector" class="navbar-input" @change="emit('changeTheme', $event.target.value)">
-        <option v-for="theme in themes" :value="theme.value">{{ theme.text }}
-        </option>
-      </select>
+    <div class="navbar-story-list-wrapper">
+      <!-- <button v-for="story, index in props.stories" :class="`navbar-story ${getButtonClass(index)}`"
+        @click="onMouseUp(index)" @touchend="onMouseUp(index)" @mousedown="startClickTimer(index)"
+        @touchstart="startClickTimer(index)" @mouseout="cancelClickTimer(index)" @touchmove="cancelClickTimer(index)">
+        {{ showDeleteActionForIndex !== index ? index + 1 : 'DEL' }}
+      </button> -->
+      <div v-for="story, index in props.stories" :class="`navbar-story ${getButtonClass(index)}`">
+        <button @click.stop="onStoryClick(index)" class="navbar-story-button">
+          {{ story.fileName }}
+        </button>
+        <button class="navbar-story-delete-button" @click.stop="onDeleteStory(index)">
+          <span class="material-symbols-outlined navbar-story-delete-button-icon">close</span>
+        </button>
+      </div>
     </div>
-    <div class="nav-items-right">
-      <button 
-        v-for="story, index in props.stories" 
-        :class="`navbar-input ${getButtonClass(index)}`"
-        @click="onMouseUp(index)"
-        @touchend="onMouseUp(index)"
-        @mousedown="startClickTimer(index)"
-        @touchstart="startClickTimer(index)"
-        @mouseout="cancelClickTimer(index)"
-        @touchmove="cancelClickTimer(index)"
-        >
-        {{ showDeleteActionForIndex !== index ? index+1 : 'DEL'}}
-      </button>
-      <button 
-        class="navbar-input" 
-        id="add-stories-btn" 
-        @click="openImporter"
-      >+</button>
+
+    <div class="navbar-controls">
+      <button class="navbar-input" id="add-stories-btn" @click="openImporter"><span
+          class="material-symbols-outlined navbar-icon">add</span></button>
+      <div class="font-size-controls">
+        <button class="navbar-input"><span class="material-symbols-outlined navbar-icon">text_decrease</span></button>
+        <button class="navbar-input"><span class="material-symbols-outlined navbar-icon">text_increase</span></button>
+      </div>
+      <div class="dropdown-controls">
+        <div class="dropdown-wrapper">
+          <!-- icon goes here -->
+          <span class="material-symbols-outlined navbar-icon">font_download</span>
+          <div class="select-border"><select name="theme-selector" id="theme-selector" class="navbar-input"
+              @change="emit('changeTheme', $event.target.value)">
+              <option v-for="theme in themes" :value="theme.value">{{ theme.text }}
+              </option>
+            </select></div>
+        </div>
+        <div class="dropdown-wrapper">
+          <!-- icon goes here -->
+          <span class="material-symbols-outlined navbar-icon">imagesearch_roller</span>
+          <div class="select-border"><select name="theme-selector" id="theme-selector" class="navbar-input"
+              @change="emit('changeTheme', $event.target.value)">
+              <option v-for="theme in themes" :value="theme.value">{{ theme.text }}
+              </option>
+            </select></div>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
   
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 
 const props = defineProps(['stories', 'selectedStoryIndex'])
 
 // --- Outbound events: ---
 const emit = defineEmits(['openDialogue', 'selectStory', 'deleteStory', 'changeTheme'])
-const openImporter = function() {
+const openImporter = function () {
   emit("openDialogue", "importNewImage")
 }
 
-const selectStory = function(index) {
+const selectStory = function (index) {
   emit("selectStory", index)
 }
 
@@ -61,53 +79,22 @@ const themes = ref([
 ])
 
 // --- Page button class management: ---
-const getButtonClass = function(index) {
-  if (showDeleteActionForIndex.value === index) {
-    return 'delete'
-  } else if (props.selectedStoryIndex === index) {
+const getButtonClass = function (index) {
+  if (props.selectedStoryIndex === index) {
     return 'selected'
   } else {
     return ''
   }
 }
 
-
-// --- Long press handling: ---
-const clickTimer = ref(null)
-const longClick = ref(false)
-
-const showDeleteActionForIndex = ref(null);
-
-const startClickTimer = function(index) {
-  clickTimer.value = setTimeout(() => {
-    longClick.value = true
-    //add delete class to page button
-    showDeleteActionForIndex.value = index
-  }, 500)
+// --- Story selection/deletion: ---
+const onStoryClick = function (index) {
+  selectStory(index)
 }
 
-const cancelClickTimer = function() {
-  longClick.value = false
-  showDeleteActionForIndex.value = null
-  clearTimeout(clickTimer.value)
-  clickTimer.value = null
-}
-
-const onMouseUp = function(index) {
-  if (!longClick.value) {
-    selectStory(index)
-  } else {
-    emit('deleteStory', index)
-  }
-  showDeleteActionForIndex.value = null
-  clearTimeout(clickTimer.value)
-  clickTimer.value = null
-  longClick.value = false
+const onDeleteStory = function (index) {
+  emit('deleteStory', index)
 }
 </script>
 
-<style scoped>
-</style>
-
-
-  
+<style scoped></style>

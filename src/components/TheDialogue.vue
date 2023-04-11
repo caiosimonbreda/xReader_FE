@@ -4,7 +4,9 @@
       <h3 class="dialogue-title">
         <slot name="title">Dialog title</slot>
       </h3>
-      <button class="dialogue-close-button" @click="closeDialogue">✕</button>
+      <button class="dialogue-close-button" @click="closeDialogue">
+        <span class="material-symbols-outlined">close</span>
+      </button>
     </div>
     <div class="dialogue-content-wrapper">
       <slot name="content">

@@ -62,13 +62,14 @@ const stories = ref([])
 
 // adding new stories:
 const onStoriesAdded = function (newStories) {
+  console.log(newStories)
   stories.value = stories.value.concat(newStories)
   selectStory(stories.value.length - 1)
 }
 // deleting a story:
 const deleteStory = function (index) {
   stories.value.splice(index, 1)
-  
+
   if (stories.value[index-1]) {
     selectStory(index-1)
   } else if (stories.value[index+1]) {
