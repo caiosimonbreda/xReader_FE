@@ -1,13 +1,15 @@
 <template>
   <div class="reader-view">
     <Navbar 
-      class="navbar-container" 
+      :class="`navbar-container ${showNavbar ? '' : 'hidden'}`"
       :stories="stories" 
-      :selected-story-index="selectedStoryIndex" 
+      :selected-story-index="selectedStoryIndex"
+      :show-navbar="showNavbar"
       @openDialogue="openDialogue" 
       @selectStory="selectStory" 
       @deleteStory="deleteStory"
       @changeTheme="selectTheme"
+      @toggleNavbar="showNavbar = !showNavbar"
     />
     <div class="main-content-wrapper">
       <div v-if="storyToDisplay.text" class="text-wrapper">
@@ -55,6 +57,9 @@ const openDialogue = function (context) {
   //on the component that should be mounted in the dialogue. 
   showDialogue.value = true
 }
+
+// --- Navbar toggle: ---
+const showNavbar = ref(false)
 
 // --- Stories array management: ---
 const stories = ref([])

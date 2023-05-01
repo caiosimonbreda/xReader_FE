@@ -1,11 +1,9 @@
 <template>
   <nav class="navbar">
     <div class="navbar-story-list-wrapper">
-      <!-- <button v-for="story, index in props.stories" :class="`navbar-story ${getButtonClass(index)}`"
-        @click="onMouseUp(index)" @touchend="onMouseUp(index)" @mousedown="startClickTimer(index)"
-        @touchstart="startClickTimer(index)" @mouseout="cancelClickTimer(index)" @touchmove="cancelClickTimer(index)">
-        {{ showDeleteActionForIndex !== index ? index + 1 : 'DEL' }}
-      </button> -->
+      <div class="navbar-puller" @click="toggleNavbar">
+        <span class="material-symbols-outlined navbar-icon">expand_less</span>
+      </div>
       <div v-for="story, index in props.stories" :class="`navbar-story ${getButtonClass(index)}`">
         <button @click.stop="onStoryClick(index)" class="navbar-story-button">
           {{ story.fileName }}
@@ -50,16 +48,20 @@
 <script setup>
 import { ref } from 'vue';
 
-const props = defineProps(['stories', 'selectedStoryIndex'])
+const props = defineProps(['stories', 'selectedStoryIndex', 'showNavbar'])
 
 // --- Outbound events: ---
-const emit = defineEmits(['openDialogue', 'selectStory', 'deleteStory', 'changeTheme'])
+const emit = defineEmits(['openDialogue', 'selectStory', 'deleteStory', 'changeTheme', 'toggleNavbar'])
 const openImporter = function () {
   emit("openDialogue", "importNewImage")
 }
 
 const selectStory = function (index) {
   emit("selectStory", index)
+}
+
+const toggleNavbar = function () {
+  emit("toggleNavbar")
 }
 
 // --- Theme selection: ---
